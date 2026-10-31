@@ -65,7 +65,7 @@ flowchart LR
 | # | Component | Recommendation | Approx. cost | Notes |
 |---|---|---|---|---|
 | 1 | LEGO EV3 brick + 2 large motors + wheels | Already owned | – | Build a simple two-wheel differential drive with a caster/skid at the back |
-| 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB or 2 GB** | $67.50 (2 GB, Oct 2026 list) | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
+| 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB** (pishop.us) | $35 | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
 | 3 | Camera | **Arducam Day-Night Vision (OV5647, 5 MP, 130° diagonal, motorised IR-cut filter, 2 IR LED boards included)** | $24 | Correct colour by day, infrared night vision with the lights off. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for sharper daytime-only video: Arducam IMX708 Wide, ~$30 |
 | 4 | microSD for Pi | 32 GB A1 (owned: Lexar E-series) | $0 | Raspberry Pi OS Lite 64-bit |
 | 5 | microSD for EV3 | **2–32 GB SDHC** (owned: second Lexar 32 GB) | $0 | For ev3dev. EV3 cannot boot from cards larger than 32 GB |
@@ -74,7 +74,7 @@ flowchart LR
 | 8 | EV3 power | EV3 rechargeable Li-ion pack (2050 mAh) or 6× AA NiMH | owned / $60 | Rechargeable pack is strongly preferred for weight and runtime |
 | 9 | Mounting | **Pi-Blox LEGO-studded Pi 4 case** + hook-and-loop straps | $8 + $7 | Camera mounted 15–30 cm off the floor, tilted ~10° up |
 | 10 | Cooling | Small heatsink set for Pi 4 | $5 | Fanless is fine for 720p streaming |
-| | **Core total (excluding owned parts)** | | **≈ $190–210** | Pi 4 2 GB at the Oct 2026 list price of $67.50 |
+| | **Core total (excluding owned parts)** | | **≈ $130–150** | Pi 4 1 GB at $35; the 2 GB board is $67.50 after the Oct 2026 price rise |
 
 Optional (later phases):
 
@@ -90,7 +90,7 @@ Optional (later phases):
 
 | Model | Pros | Cons | Verdict |
 |---|---|---|---|
-| **Pi 4 B (2 GB)** | Hardware H.264 encode, 4× USB, dual-band Wi-Fi, headroom for audio and detection | ~4–5 W while streaming, 46 g | **Recommended** |
+| **Pi 4 B (1 GB)** | Hardware H.264 encode, 4× USB, dual-band Wi-Fi, $35. 1 GB is ample: MediaMTX, the control server and Tailscale use well under 500 MB together | ~4–5 W while streaming, 46 g | **Recommended** |
 | Pi Zero 2 W | 15 g, ~1.5 W, $15, hardware H.264 | One micro-USB data port, 2.4 GHz Wi-Fi only, 512 MB RAM, **largely sold out as of Oct 2026** | Only if you already have one |
 | Pi 5 | Fastest | **No hardware video encoder** (software encode works but burns CPU and power), needs 5 V / 5 A, runs hot | Not recommended on a battery robot |
 | Pi 3 B+ | Cheap used | Slower, 2.4/5 GHz Wi-Fi ok | Fine if you already have one |

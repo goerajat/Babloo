@@ -8,7 +8,7 @@ time of writing it is flagged, with an authorised-reseller alternative.
 
 | # | Part | Amazon link | Approx. price | Notes |
 |---|---|---|---|---|
-| 1 | Raspberry Pi 4 Model B, 1 GB or 2 GB | pishop.us · seeedstudio.com · canakit.com | $67.50 (2 GB, Oct 2026 list); 1 GB cheaper and sufficient | **Amazon listings are $130+.** Buy from an approved reseller. 1 GB is enough for MediaMTX + the control server |
+| 1 | Raspberry Pi 4 Model B, **1 GB** | **[pishop.us, $35, in stock](https://www.pishop.us/product/raspberry-pi-4-model-b-1gb/)** | $35 | **Chosen.** 1 GB is plenty for MediaMTX + the control server + Tailscale. Amazon listings are $130+; the 2 GB board is $67.50 after the Oct 2026 price rise |
 | 2 | Camera: **Arducam Day-Night Vision, OV5647, 130° (D) × 100° (H), auto IR-cut, IR LEDs included** | [Arducam Day-Night B07X1VGQSL](https://www.amazon.com/gp/product/B07X1VGQSL) | $24 | **Chosen.** Motorised IR-cut filter gives correct daytime colour and real night vision with the included LED boards. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for a sharper daytime-only image: [Arducam IMX708 Wide](https://www.amazon.com/Arducam-Raspberry-Camera-Autofocus-with15cm/dp/B0CLNSTV39), ~$30 |
 | 3 | microSD for the Pi, 32 GB A1 | **Owned: Lexar E-series 32 GB UHS-I A1 microSDHC** | $0 | A1 rating is what matters for Pi OS |
 | 4 | microSD for the EV3, ≤ 32 GB SDHC | **Owned: second Lexar E-series 32 GB microSDHC** | $0 | 32 GB is the EV3's maximum (SDHC, not SDXC). Label the two cards after flashing |
@@ -19,7 +19,7 @@ time of writing it is flagged, with an authorised-reseller alternative.
 | 9 | Heatsinks for Pi 4 | [Easycargo Pi 4 heatsink kit](https://www.amazon.com/Easycargo-Raspberry-Heatsink-Aluminum-conductive/dp/B079FV2RH3) | $7 | Passive cooling is enough for 720p streaming |
 | 10 | LEGO-compatible Pi 4 case | **[Pi-Blox Pi 4 case, black](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS79DDPH)** ([red](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HTCWX), [blue](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HSTZW)) | $7.70 | **Chosen.** Studded top and bottom (LEGO System studs, not Technic pins); attaches to the EV3 with a few plates. If there is no slot for the camera ribbon, route it between lid and base |
 | 11 | Hook-and-loop cable ties | [Wisdompro 4 in, 50-pack](https://www.amazon.com/Inches-Cable-Self-gripping-Fastening-Wisdompro/dp/B07WHQR2JB) | $7 | Strap the power bank down and keep every cable out of reach of teeth |
-| | **Core total** | | **≈ $160–185** | Pi 4 at Oct 2026 list price from a reseller; microSD cards owned |
+| | **Core total** | | **≈ $130–150** | Pi 4 1 GB at $35; microSD cards owned |
 
 ## Items already selected (31 Oct 2026, all in stock on Amazon)
 
@@ -30,7 +30,7 @@ time of writing it is flagged, with an authorised-reseller alternative.
 | Pi-Blox Raspberry Pi 4 case, black, B0BS79DDPH | $7.70 |
 | Sabrent USB-C & USB-A SD/microSD reader, CR-BCA2 | $9.49 |
 
-Still to buy: Raspberry Pi 4 (reseller), USB-A to mini-USB cable,
+Still to buy: Raspberry Pi 4 1 GB from pishop.us ($35), USB-A to mini-USB cable,
 heatsinks, hook-and-loop ties, and AA NiMH cells + charger for the EV3 unless you own the LEGO pack.
 
 ## EV3 power
