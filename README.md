@@ -16,3 +16,4 @@ A phone-controlled pet-monitoring robot: LEGO EV3 drive base + Raspberry Pi came
 | Controls | **FastAPI** + WebSocket + on-screen joystick (nipple.js) |
 | Remote access | **Tailscale** (no port forwarding) |
 | Safety | Speed cap + two independent 500 ms dead-man stops |
+- **Bill of materials:** [docs/BOM.md](docs/BOM.md) — every part with Amazon links and prices.
