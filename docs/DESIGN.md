@@ -65,7 +65,7 @@ flowchart LR
 | # | Component | Recommendation | Approx. cost | Notes |
 |---|---|---|---|---|
 | 1 | LEGO EV3 brick + 2 large motors + wheels | Already owned | – | Build a simple two-wheel differential drive with a caster/skid at the back |
-| 2 | Single-board computer | **Raspberry Pi 4 Model B, 2 GB** | $45 | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
+| 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB or 2 GB** | $67.50 (2 GB, Oct 2026 list) | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
 | 3 | Camera | **Raspberry Pi Camera Module 3 Wide** | $35 | 12 MP, autofocus, 120° field of view, good indoor low-light. Wide lens helps see a whole room from floor level |
 | 4 | microSD for Pi | 32 GB, A1/A2 class | $10 | Raspberry Pi OS Lite 64-bit |
 | 5 | microSD for EV3 | **2–32 GB SDHC** (not SDXC) | $8 | For ev3dev. EV3 cannot boot from cards larger than 32 GB |
@@ -92,7 +92,7 @@ Optional (later phases):
 | Model | Pros | Cons | Verdict |
 |---|---|---|---|
 | **Pi 4 B (2 GB)** | Hardware H.264 encode, 4× USB, dual-band Wi-Fi, headroom for audio and detection | ~4–5 W while streaming, 46 g | **Recommended** |
-| Pi Zero 2 W | 15 g, ~1.5 W, $15, hardware H.264 | One micro-USB data port (needs a hub for EV3 + audio), 2.4 GHz Wi-Fi only, 512 MB RAM, needs camera adapter cable | Good budget / lightweight alternative |
+| Pi Zero 2 W | 15 g, ~1.5 W, $15, hardware H.264 | One micro-USB data port, 2.4 GHz Wi-Fi only, 512 MB RAM, **largely sold out as of Oct 2026** | Only if you already have one |
 | Pi 5 | Fastest | **No hardware video encoder** (software encode works but burns CPU and power), needs 5 V / 5 A, runs hot | Not recommended on a battery robot |
 | Pi 3 B+ | Cheap used | Slower, 2.4/5 GHz Wi-Fi ok | Fine if you already have one |
 

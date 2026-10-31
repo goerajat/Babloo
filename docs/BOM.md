@@ -49,27 +49,40 @@ time of writing it is flagged, with an authorised-reseller alternative.
 - Pi power supply: the power bank replaces it. You will want a USB-C charger to recharge the bank, but any phone charger works.
 - Pi Build HAT: that is for driving LEGO Powered Up / SPIKE motors directly from a Pi; EV3 motors use a different connector, so stick with the EV3 brick as the motor controller.
 
-## Availability check (31 Oct 2026)
+## Availability check (31 Oct 2026, second pass)
 
-Checked from cached Amazon search snapshots, not live product pages, so treat these as
-indicators and confirm on the listing before ordering.
+Direct product pages could not be opened from this environment, so this is built from cached
+Amazon search snapshots plus reseller and news pages. Confirm on the live page before ordering.
+
+**Headline changes since the first draft**
+
+- Raspberry Pi raised list prices on 1 Oct 2026 because of memory costs. The **Pi 4 2 GB is now
+  $67.50** (was $45) and the Pi 5 2 GB is $77.50. The 1 GB Pi 4 was not raised. Raspberry Pi
+  says the increases are temporary.
+- The **Pi Zero 2 W is largely sold out** at major retailers. Treat it as unavailable.
+- The **official Camera Module 3 is unavailable on Amazon in every variant** (standard, Wide,
+  NoIR, NoIR Wide). The Arducam IMX708 modules are the practical choice.
+- Core total is now **≈ $190–210** with a Pi 4 2 GB at list price.
 
 | Part | Status | Action |
 |---|---|---|
-| Pi 4 Model B 2 GB (official listing) | Listed in stock but at $130–150 from third-party sellers, three times list price | Buy from pishop.us, adafruit.com, canakit.com or vilros.com at $45 |
-| Pi Zero 2 W | Listed, but one snapshot showed $87 against a $15 list price | Same: buy from an approved reseller |
-| Camera Module 3 Wide (official) | **Currently unavailable** | Use the Arducam IMX708 Wide (B0CLNSTV39) or the official standard 75° module (B0BRY6MVXL, listed, price flagged "high") |
-| Camera Module 3 NoIR Wide (official) | **Currently unavailable** | Use the official NoIR 75° (B0BRY3L9H7, listed) or Arducam IMX708 NoIR Wide (B0FNCY34DK) |
-| Anker PowerCore 10K 5V/3A | Available. Sibling ASIN B0DP6XF8J2 showed $23.74 | Any of the 5 V/3 A PowerCore 10K variants is fine |
-| SanDisk Ultra 32 GB A1 | Listed, no price in snapshot | Commodity item, widely stocked |
-| SanDisk Ultra 16 GB | Listed, about $7, 500+ bought last month | OK |
+| Pi 4 Model B 2 GB | List price $67.50. pishop.us and seeedstudio.com list it at $67.50; Seeed shows in stock; Adafruit and SparkFun out of stock. Amazon third-party sellers $130–150 | Buy from pishop.us or seeedstudio.com. A **1 GB Pi 4 is enough** for this project (MediaMTX + a small Python server) and was not price-raised, so take it if offered cheaper |
+| Pi 5 2 GB (fallback) | $77.50 at pishop.us and canakit.com, shown in stock | Works, but no hardware H.264 encoder and about twice the power draw. Only if no Pi 4 can be found |
+| Pi Zero 2 W | Sold out at most retailers; Amazon listings up to $87 | Drop from the plan |
+| Arducam IMX708 Wide with case (B0CLNSTV39) | Listed; no price captured | **Primary camera.** Open the page to confirm price (historically ~$30) |
+| Official Camera Module 3, all variants | Currently unavailable on Amazon | Skip. If you want the official part, buy from pishop.us or adafruit.com |
+| Arducam IMX708 NoIR Wide (B0FNCY34DK) | Listed; no price captured | Night-vision alternative to the above |
+| Anker PowerCore 10K 5 V/3 A (B0DP6XF8J2) | $23.74, listed | OK |
+| SanDisk Ultra 32 GB A1 (B08GY9NYRM) | Listed, Amazon best seller | OK |
+| SanDisk Ultra 16 GB (B074B4P7KD) | About $7, 500+ sold last month | OK |
 | Sabrent CR-BCA2 reader | In stock, about $7 | OK |
-| Eneloop AA 8-pack + CC87 charger | Listed. Alternative bundle B0C234GGG4 showed $19 | OK |
-| LEGO 45501 battery | No featured offer; only used/third-party stock | Go with the eneloop AA option unless you already own one |
-| Pi-Blox Pi 4 case | Listed, no price in snapshot; older Pi-Blox listings are discontinued | If unavailable, use the official Pi 4 case (B07WQ5G6YY) plus hook-and-loop straps |
-| StarTech USB2HABM1 1 ft mini-USB cable | 1 ft listing could not be confirmed; 0.5 m version exists | Any USB-A to mini-B cable works; CablesOnline 1 ft (B082791G8N) is a drop-in |
-| Umefly right-angle USB-C 3-pack | Listed, 50+ bought last month, 3 A rated | OK |
-| Easycargo heatsink kit | Listed, no price in snapshot | Commodity item; any Pi 4 heatsink set works |
-| Wisdompro hook-and-loop ties | No featured offer in snapshot | Any 4 in hook-and-loop ties work |
-| DORHEA IR boards | Listed, no price in snapshot | OK, optional |
-| Anker PowerConf S330 | Listed (B09FJ7LWX4); only a bundle price seen | OK, optional |
+| CablesOnline 1 ft mini-USB (B082791G8N) | Listed; no price captured. Sibling CableWholesale 1 ft cable in stock at $4.98 (B002WPML2G) | Either works |
+| Umefly right-angle USB-C 3-pack | Listed, 50+ sold last month | OK |
+| Easycargo heatsink kit | Listed; no price captured | Commodity, any Pi 4 heatsink set works |
+| Pi-Blox Pi 4 case (B0BS79DDPH) | Listed with "click to see price"; stock unclear | Try it; fallback below |
+| Official Pi 4 case (B07WQ5G6YY) | No featured offer on Amazon | Buy the official case from pishop.us instead, or any Pi 4 case plus straps |
+| Wisdompro hook-and-loop ties | No featured offer | Any 4 in hook-and-loop ties |
+| Eneloop AA 8-pack + charger | Bundle B0C234GGG4 at $19.17; batteries alone $22.79 | OK |
+| LEGO 45501 battery | Used stock only, $130+ | Use eneloops |
+| DORHEA IR boards | Listed; no price captured | OK, optional |
+| Anker PowerConf S330 (B09FJ7LWX4) | Listed; only a bundle price seen ($60 with webcam) | OK, optional |
