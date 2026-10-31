@@ -66,13 +66,13 @@ flowchart LR
 |---|---|---|---|---|
 | 1 | LEGO EV3 brick + 2 large motors + wheels | Already owned | – | Build a simple two-wheel differential drive with a caster/skid at the back |
 | 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB or 2 GB** | $67.50 (2 GB, Oct 2026 list) | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
-| 3 | Camera | **Raspberry Pi Camera Module 3 Wide** | $35 | 12 MP, autofocus, 120° field of view, good indoor low-light. Wide lens helps see a whole room from floor level |
+| 3 | Camera | **Arducam Day-Night Vision (OV5647, 5 MP, 130° diagonal, motorised IR-cut filter, 2 IR LED boards included)** | $24 | Correct colour by day, infrared night vision with the lights off. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for sharper daytime-only video: Arducam IMX708 Wide, ~$30 |
 | 4 | microSD for Pi | 32 GB, A1/A2 class | $10 | Raspberry Pi OS Lite 64-bit |
 | 5 | microSD for EV3 | **2–32 GB SDHC** (not SDXC) | $8 | For ev3dev. EV3 cannot boot from cards larger than 32 GB |
-| 6 | Pi power | USB power bank, 10 000 mAh, 5 V / 3 A output, USB-C cable | $25 | Must *not* auto-shut-off on low load. Pi 4 is sensitive to cheap cables (under-voltage throttling) |
+| 6 | Pi power | **Amazon Basics 20 000 mAh power bank, 2× USB-C 20 W + USB-A** (includes USB-C to USB-C cable) | $32 | Power the Pi from a **USB-C port** for 5 V / 3 A; the USB-A port is 2.4 A only. ~400 g, mount low. ~12–14 h of streaming |
 | 7 | Pi ↔ EV3 link | USB-A to mini-USB-B cable (short, 30 cm) | $5 | EV3's "PC" port is mini-USB. Carries both the network link and nothing else; EV3 keeps its own battery |
 | 8 | EV3 power | EV3 rechargeable Li-ion pack (2050 mAh) or 6× AA NiMH | owned / $60 | Rechargeable pack is strongly preferred for weight and runtime |
-| 9 | Mounting | Technic-compatible Pi 4 case (several on Thingiverse / Pimoroni), or velcro straps + zip ties | $0–15 | Camera mounted 15–30 cm off the floor, tilted ~10° up |
+| 9 | Mounting | **Pi-Blox LEGO-studded Pi 4 case** + hook-and-loop straps | $8 + $7 | Camera mounted 15–30 cm off the floor, tilted ~10° up |
 | 10 | Cooling | Small heatsink set for Pi 4 | $5 | Fanless is fine for 720p streaming |
 | | **Core total (excluding owned parts)** | | **≈ $190–210** | Pi 4 2 GB at the Oct 2026 list price of $67.50 |
 
@@ -81,7 +81,6 @@ Optional (later phases):
 | Component | Purpose | Approx. cost |
 |---|---|---|
 | USB speakerphone (e.g. a small conference speaker with built-in mic) | Two-way audio in one plug-and-play device | $30–60 |
-| Camera Module 3 **NoIR** + 850 nm IR LED board | Night vision in dark rooms. Needs its own 5 V from the power bank | $25 + $10 |
 | EV3 Touch Sensor on a front bumper | Stop on collision | owned (in most kits) |
 | EV3 Ultrasonic Sensor | Slow down near obstacles | owned (in most kits) |
 | Pimoroni Pan-Tilt HAT | Look around without driving | $25 |
@@ -100,8 +99,7 @@ Optional (later phases):
 
 | Load | Power | Energy source | Estimated runtime |
 |---|---|---|---|
-| Pi 4 + camera streaming 720p | ~4.5 W avg | 10 000 mAh bank (~30 Wh usable) | **≈ 6–7 h** |
-| Pi Zero 2 W + camera | ~1.5 W avg | same bank | ≈ 18 h |
+| Pi 4 + camera streaming 720p | ~4.5 W avg (+~1.5 W when IR LEDs are on) | 20 000 mAh bank (~60 Wh usable) | **≈ 10–14 h** |
 | EV3 brick idle + Wi-Fi off | ~1 W | 2050 mAh × 7.4 V ≈ 15 Wh | many hours |
 | EV3 driving (both motors, light load) | ~5–8 W while moving | | 2–3 h of *continuous* driving; a pet-check session is mostly idle |
 
@@ -277,8 +275,11 @@ paths:
     rpiCameraHeight: 720
     rpiCameraFPS: 25
     rpiCameraBitrate: 1500000
-    rpiCameraAfMode: continuous
 webrtcAddress: :8889
+
+# /boot/firmware/config.txt on the Pi (the Arducam Day-Night is not auto-detected):
+#   camera_auto_detect=0
+#   dtoverlay=ov5647
 ```
 
 The phone then opens `http://<tailscale-ip>:8889/cam` for video, embedded in the control
@@ -298,5 +299,10 @@ page served by FastAPI on port 8000.
   a user tap to start. MediaMTX's built-in page already handles this.
 - **EV3 auto-sleep**: ev3dev does not auto-sleep, but if you stay on stock firmware,
   disable the sleep timer in the brick settings.
-- **Pets and IR**: an IR illuminator is invisible to humans but cats and dogs may notice a
-  faint red glow from the LEDs. Harmless, but can draw a curious nose to the robot.
+- **Pets and IR**: the camera's IR LEDs are invisible to humans but cats and dogs may notice a
+  faint red glow. Harmless, but can draw a curious nose to the robot.
+- **IR-cut flapping at dusk**: the Day-Night camera's filter is triggered by light sensors on the
+  LED boards. If it clicks back and forth in half-light, turn the small potentiometer on each LED
+  board to move the threshold.
+- **Camera ribbon through the Pi-Blox case**: if the case has no slot, run the ribbon between lid
+  and base; it is thin enough that the lid still clips shut.

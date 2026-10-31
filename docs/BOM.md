@@ -8,18 +8,30 @@ time of writing it is flagged, with an authorised-reseller alternative.
 
 | # | Part | Amazon link | Approx. price | Notes |
 |---|---|---|---|---|
-| 1 | Raspberry Pi 4 Model B, 2 GB | [Official board](https://www.amazon.com/-/es/Raspberry-SC15184-Modelo-2019-Bluetooth/dp/B07TD42S27) · [CanaKit Basic Kit 2GB](https://www.amazon.com/CanaKit-Raspberry-Basic-Kit-2GB/dp/B07TYK4RL8) · [Vilros Basic Kit 2GB](https://www.amazon.com/Vilros-Raspberry-Basic-Cover-Clear/dp/B07TKF7YJR) | $45 list | **Amazon listings were $130+ at time of writing.** Buy at list from an approved reseller instead: pishop.us, adafruit.com, canakit.com, vilros.com. A 4 GB board is fine too |
-| 2 | Camera: Raspberry Pi Camera Module 3 Wide | [Official Wide](https://www.amazon.com/Raspberry-Pi-Camera-Module-Wide/dp/B0BRY757NX) · [Official standard 75°](https://www.amazon.com/Raspberry-Pi-Camera-Module/dp/B0BRY6MVXL) · [Arducam IMX708 Wide w/ case](https://www.amazon.com/Arducam-Raspberry-Camera-Autofocus-with15cm/dp/B0CLNSTV39) | $35 (Wide) / $25 (standard) | Official Wide was out of stock on Amazon at time of writing; the Arducam IMX708 120° is the same sensor and works with `libcamera` (needs one config line). Standard 75° official module is a fine fallback |
+| 1 | Raspberry Pi 4 Model B, 1 GB or 2 GB | pishop.us · seeedstudio.com · canakit.com | $67.50 (2 GB, Oct 2026 list); 1 GB cheaper and sufficient | **Amazon listings are $130+.** Buy from an approved reseller. 1 GB is enough for MediaMTX + the control server |
+| 2 | Camera: **Arducam Day-Night Vision, OV5647, 130° (D) × 100° (H), auto IR-cut, IR LEDs included** | [Arducam Day-Night B07X1VGQSL](https://www.amazon.com/gp/product/B07X1VGQSL) | $24 | **Chosen.** Motorised IR-cut filter gives correct daytime colour and real night vision with the included LED boards. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for a sharper daytime-only image: [Arducam IMX708 Wide](https://www.amazon.com/Arducam-Raspberry-Camera-Autofocus-with15cm/dp/B0CLNSTV39), ~$30 |
 | 3 | microSD for the Pi, 32 GB A1 | [SanDisk Ultra 32GB A1](https://www.amazon.com/SanDisk-Ultra-microSDHC-Memory-Adapter/dp/B08GY9NYRM) | $9 | Comes with SD adapter |
 | 4 | microSD for the EV3, 16 GB SDHC | [SanDisk Ultra 16GB](https://www.amazon.com/SanDisk-Ultra-SDSQUNS-016G-GN3MN-UHS-I-microSDHC/dp/B074B4P7KD) · [Micro Center 16GB 5-pack](https://www.amazon.com/Center-Memory-Adapter-Mobile-Storage/dp/B08HD83TFJ) | $8 | **Must be 32 GB or smaller.** A second 32 GB SanDisk Ultra from item 3 also works |
 | 5 | microSD card reader (if your laptop lacks one) | [Sabrent USB-C + USB-A reader](https://www.amazon.com/SABRENT-Reader-High-Speed-Adapter-Memory/dp/B07KGR39PL) | $10 | Needed to flash both cards |
-| 6 | USB power bank for the Pi, 10 000 mAh, 5 V/3 A | [Anker PowerCore 10K, 5V/3A, trickle mode](https://www.amazon.com/Anker-Portable-PowerCore-High-Speed-Technology/dp/B08TW84CR1) · [Anker 10K PowerIQ USB-C](https://www.amazon.com/Anker-Travel-Ready-Technology-High-Speed-Output%EF%BC%88Black%EF%BC%89%EF%BC%8C1pack/dp/B0D5CLSMFB) | $20–25 | Pick a bank with a **3 A output** and a **trickle-charging / low-current mode** so it never switches off under light load. Check the listing: some Anker 10K models are 2.4 A and USB-C input only |
-| 7 | USB-C power cable, short, right-angle | [Umefly 1 ft right-angle USB-A to USB-C, 3-pack](https://www.amazon.com/Umefly-USB-C-Cable/dp/B0BLXD4X4G) · [USB-C to USB-C 1 ft 100 W, 3-pack](https://www.amazon.com/Braided-Charging-Compatible-MacBook-S22%EF%BC%8CPixel/dp/B0B5QJTT8M) | $8–10 | Match the plug to the bank's output port (USB-A or USB-C). Short and thick avoids under-voltage |
-| 8 | USB-A to mini-USB-B cable, 1 ft (Pi → EV3) | [StarTech USB2HABM1](https://www.amazon.com/StarTech-1-Feet-Mini-USB-Cable/dp/B002L5U7N2) · [CablesOnline 1 ft](https://www.amazon.com/CablesOnline-Type-Mini-B-Shielded-USB2-A501/dp/B082791G8N) | $6 | Plugs into the EV3 "PC" port. Avoid the StarTech **Y-cable** variant |
+| 6 | USB power bank for the Pi | **[Amazon Basics 20 000 mAh, 2× USB-C 20 W + USB-A](https://www.amazon.com/gp/product/B0FFM4BY6C)** · lighter alternative: [Anker PowerCore 10K 5V/3A](https://www.amazon.com/Anker-Travel-Ready-Technology-High-Speed-Output%EF%BC%88Black/dp/B0DP6XF8J2) | $32 (often $13–20 on deal) | **Chosen.** Power the Pi from a **USB-C port** with the included USB-C to USB-C cable to get 5 V/3 A; the USB-A port is only 2.4 A. ~400 g, so strap it low and central. Roughly 12–14 h of streaming |
+| 7 | USB-C power cable | Included with the Amazon Basics bank (1 ft USB-C to USB-C) | $0 | If you want a right-angle one later, any basic 60 W USB-C to USB-C cable; avoid 100 W+ e-marked cables with early Pi 4 boards |
+| 8 | USB-A to mini-USB-B cable, 1 ft (Pi → EV3) | [CablesOnline 1 ft](https://www.amazon.com/CablesOnline-Type-Mini-B-Shielded-USB2-A501/dp/B082791G8N) · [CableWholesale 1 ft](https://www.amazon.com/CableWholesale-1-Feet-Mini-B-Cable-10UM-02101BK/dp/B002WPML2G) | $5 | Plugs into the EV3 "PC" port |
 | 9 | Heatsinks for Pi 4 | [Easycargo Pi 4 heatsink kit](https://www.amazon.com/Easycargo-Raspberry-Heatsink-Aluminum-conductive/dp/B079FV2RH3) | $7 | Passive cooling is enough for 720p streaming |
-| 10 | LEGO-compatible Pi 4 case | [Pi-Blox Pi 4 case, black](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS79DDPH) ([red](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HTCWX), [blue](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HSTZW)) | $12 | Studded top and bottom (LEGO System studs, not Technic pins). Attaches to EV3 via a few plates/bricks. Camera cable exits through the slot |
+| 10 | LEGO-compatible Pi 4 case | **[Pi-Blox Pi 4 case, black](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS79DDPH)** ([red](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HTCWX), [blue](https://www.amazon.com/Raspberry-Pi-Case-Pi-Blox-Enclosure/dp/B0BS8HSTZW)) | $7.70 | **Chosen.** If there is no slot for the camera ribbon, route it between lid and base | Studded top and bottom (LEGO System studs, not Technic pins). Attaches to EV3 via a few plates/bricks. Camera cable exits through the slot |
 | 11 | Hook-and-loop cable ties | [Wisdompro 4 in, 50-pack](https://www.amazon.com/Inches-Cable-Self-gripping-Fastening-Wisdompro/dp/B07WHQR2JB) | $7 | Strap the power bank down and keep every cable out of reach of teeth |
-| | **Core total** | | **≈ $165–185** | Assumes Pi 4 bought at list price from a reseller |
+| | **Core total** | | **≈ $175–200** | Pi 4 at Oct 2026 list price from a reseller |
+
+## Items already selected (31 Oct 2026, all in stock on Amazon)
+
+| Item | Price seen |
+|---|---|
+| Arducam Day-Night Vision camera, 130° (D) × 100° (H), IR-cut, B07X1VGQSL | $23.99 |
+| Amazon Basics 20 000 mAh 3-port power bank, B0FFM4BY6C | $32.39 |
+| Pi-Blox Raspberry Pi 4 case, black, B0BS79DDPH | $7.70 |
+| Sabrent USB-C & USB-A SD/microSD reader, CR-BCA2 | $9.49 |
+
+Still to buy: Raspberry Pi 4 (reseller), 32 GB and 16 GB microSD cards, USB-A to mini-USB cable,
+heatsinks, hook-and-loop ties, and AA NiMH cells + charger for the EV3 unless you own the LEGO pack.
 
 ## EV3 power
 
@@ -32,8 +44,6 @@ time of writing it is flagged, with an authorised-reseller alternative.
 
 | Part | Amazon link | Approx. price | Purpose |
 |---|---|---|---|
-| Camera Module 3 **NoIR** (75°) | [Official NoIR](https://www.amazon.com/Raspberry-Pi-Camera-Module-NoIR/dp/B0BRY3L9H7) · [NoIR Wide](https://www.amazon.com/Raspberry-Pi-Camera-Module-NoIR/dp/B0BRY6VLR6) · [Arducam IMX708 NoIR Wide](https://www.amazon.com/Arducam-Raspberry-Camera-Module-IMX708/dp/B0FNCY34DK) | $25–35 | Night vision. Buy *instead of* item 2 if dark rooms matter more than daytime colour accuracy |
-| 850 nm IR illuminator boards | [DORHEA 3 W 850 nm, 2-pack](https://www.amazon.com/Infrared-Illuminator-Adjustable-Resistor-Raspberry/dp/B07FM6LL3V) | $10 | Pairs with the NoIR camera. Powered from the Pi's 3.3 V/5 V pins; has a light sensor so it turns on only in the dark. Gets warm: mount on the case, not the Pi |
 | USB speakerphone (mic + speaker) | [Anker PowerConf S330](https://www.amazon.com/Speakerphone-Conference-Speaker-Business-Microphone/dp/B08XWZ81CW) · [Compact USB speakerphone](https://www.amazon.com/Conference-Microphone-Omnidirectional-Microphones-Reduction/dp/B0B4D1TJ79) | $25–60 | Two-way audio: hear the pet, talk to it. Plug-and-play on Linux (USB Audio Class) |
 | Raspberry Pi Zero 2 W (budget alternative to Pi 4) | [Pi Zero 2 W](https://www.amazon.com/Raspberry-Zero-Bluetooth-RPi-2W/dp/B09LH5SBPS) | $15 list | Lighter and 3× longer battery life, but needs a micro-USB OTG hub and a 15-to-22-pin camera adapter cable |
 
