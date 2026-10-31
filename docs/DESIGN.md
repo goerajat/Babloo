@@ -74,7 +74,7 @@ flowchart LR
 | 8 | EV3 power | EV3 rechargeable Li-ion pack (2050 mAh) or 6× AA NiMH | owned / $60 | Rechargeable pack is strongly preferred for weight and runtime |
 | 9 | Mounting | Technic-compatible Pi 4 case (several on Thingiverse / Pimoroni), or velcro straps + zip ties | $0–15 | Camera mounted 15–30 cm off the floor, tilted ~10° up |
 | 10 | Cooling | Small heatsink set for Pi 4 | $5 | Fanless is fine for 720p streaming |
-| | **Core total (excluding owned parts)** | | **≈ $130–150** | |
+| | **Core total (excluding owned parts)** | | **≈ $190–210** | Pi 4 2 GB at the Oct 2026 list price of $67.50 |
 
 Optional (later phases):
 
