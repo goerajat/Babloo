@@ -48,3 +48,28 @@ time of writing it is flagged, with an authorised-reseller alternative.
 - EV3 Wi-Fi dongle: the Pi provides the network; the EV3 talks to it over the USB cable.
 - Pi power supply: the power bank replaces it. You will want a USB-C charger to recharge the bank, but any phone charger works.
 - Pi Build HAT: that is for driving LEGO Powered Up / SPIKE motors directly from a Pi; EV3 motors use a different connector, so stick with the EV3 brick as the motor controller.
+
+## Availability check (31 Oct 2026)
+
+Checked from cached Amazon search snapshots, not live product pages, so treat these as
+indicators and confirm on the listing before ordering.
+
+| Part | Status | Action |
+|---|---|---|
+| Pi 4 Model B 2 GB (official listing) | Listed in stock but at $130–150 from third-party sellers, three times list price | Buy from pishop.us, adafruit.com, canakit.com or vilros.com at $45 |
+| Pi Zero 2 W | Listed, but one snapshot showed $87 against a $15 list price | Same: buy from an approved reseller |
+| Camera Module 3 Wide (official) | **Currently unavailable** | Use the Arducam IMX708 Wide (B0CLNSTV39) or the official standard 75° module (B0BRY6MVXL, listed, price flagged "high") |
+| Camera Module 3 NoIR Wide (official) | **Currently unavailable** | Use the official NoIR 75° (B0BRY3L9H7, listed) or Arducam IMX708 NoIR Wide (B0FNCY34DK) |
+| Anker PowerCore 10K 5V/3A | Available. Sibling ASIN B0DP6XF8J2 showed $23.74 | Any of the 5 V/3 A PowerCore 10K variants is fine |
+| SanDisk Ultra 32 GB A1 | Listed, no price in snapshot | Commodity item, widely stocked |
+| SanDisk Ultra 16 GB | Listed, about $7, 500+ bought last month | OK |
+| Sabrent CR-BCA2 reader | In stock, about $7 | OK |
+| Eneloop AA 8-pack + CC87 charger | Listed. Alternative bundle B0C234GGG4 showed $19 | OK |
+| LEGO 45501 battery | No featured offer; only used/third-party stock | Go with the eneloop AA option unless you already own one |
+| Pi-Blox Pi 4 case | Listed, no price in snapshot; older Pi-Blox listings are discontinued | If unavailable, use the official Pi 4 case (B07WQ5G6YY) plus hook-and-loop straps |
+| StarTech USB2HABM1 1 ft mini-USB cable | 1 ft listing could not be confirmed; 0.5 m version exists | Any USB-A to mini-B cable works; CablesOnline 1 ft (B082791G8N) is a drop-in |
+| Umefly right-angle USB-C 3-pack | Listed, 50+ bought last month, 3 A rated | OK |
+| Easycargo heatsink kit | Listed, no price in snapshot | Commodity item; any Pi 4 heatsink set works |
+| Wisdompro hook-and-loop ties | No featured offer in snapshot | Any 4 in hook-and-loop ties work |
+| DORHEA IR boards | Listed, no price in snapshot | OK, optional |
+| Anker PowerConf S330 | Listed (B09FJ7LWX4); only a bundle price seen | OK, optional |
