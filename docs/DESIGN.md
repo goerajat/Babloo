@@ -67,8 +67,8 @@ flowchart LR
 | 1 | LEGO EV3 brick + 2 large motors + wheels | Already owned | – | Build a simple two-wheel differential drive with a caster/skid at the back |
 | 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB or 2 GB** | $67.50 (2 GB, Oct 2026 list) | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
 | 3 | Camera | **Arducam Day-Night Vision (OV5647, 5 MP, 130° diagonal, motorised IR-cut filter, 2 IR LED boards included)** | $24 | Correct colour by day, infrared night vision with the lights off. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for sharper daytime-only video: Arducam IMX708 Wide, ~$30 |
-| 4 | microSD for Pi | 32 GB, A1/A2 class | $10 | Raspberry Pi OS Lite 64-bit |
-| 5 | microSD for EV3 | **2–32 GB SDHC** (not SDXC) | $8 | For ev3dev. EV3 cannot boot from cards larger than 32 GB |
+| 4 | microSD for Pi | 32 GB A1 (owned: Lexar E-series) | $0 | Raspberry Pi OS Lite 64-bit |
+| 5 | microSD for EV3 | **2–32 GB SDHC** (owned: second Lexar 32 GB) | $0 | For ev3dev. EV3 cannot boot from cards larger than 32 GB |
 | 6 | Pi power | **Amazon Basics 20 000 mAh power bank, 2× USB-C 20 W + USB-A** (includes USB-C to USB-C cable) | $32 | Power the Pi from a **USB-C port** for 5 V / 3 A; the USB-A port is 2.4 A only. ~400 g, mount low. ~12–14 h of streaming |
 | 7 | Pi ↔ EV3 link | USB-A to mini-USB-B cable (short, 30 cm) | $5 | EV3's "PC" port is mini-USB. Carries both the network link and nothing else; EV3 keeps its own battery |
 | 8 | EV3 power | EV3 rechargeable Li-ion pack (2050 mAh) or 6× AA NiMH | owned / $60 | Rechargeable pack is strongly preferred for weight and runtime |
