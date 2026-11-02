@@ -18,3 +18,4 @@ A phone-controlled pet-monitoring robot: LEGO EV3 drive base + Raspberry Pi came
 | Safety | Speed cap + two independent 500 ms dead-man stops |
 - **Bill of materials:** [docs/BOM.md](docs/BOM.md) — every part with Amazon links and prices.
 - **Wiring:** [docs/WIRING.md](docs/WIRING.md) — every connection, with a schematic.
+- **Downloads:** [downloads/](downloads/README.md) — one script fetches Imager, Pi OS, ev3dev and MediaMTX.

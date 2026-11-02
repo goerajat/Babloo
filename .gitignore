@@ -1,0 +1,9 @@
+# Large downloaded installers and OS images (fetched by downloads/download.sh)
+downloads/files/
+*.img
+*.img.xz
+*.img.zip
+*.part
+__pycache__/
+*.pyc
+.venv/
