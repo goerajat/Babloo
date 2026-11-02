@@ -44,9 +44,8 @@ say() { printf '\n== %s\n' "$*"; }
 # ---- 1. packages ------------------------------------------------------------
 say "apt packages"
 apt-get update -qq
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip network-manager \
-  rpicam-apps-lite libcamera0.5 curl >/dev/null 2>&1 \
-  || DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip network-manager rpicam-apps curl
+# rpicam-apps-lite is preinstalled on Pi OS Lite; never pin a libcamera version (it moves between releases).
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3-venv python3-pip network-manager rpicam-apps-lite curl
 
 # ---- 2. app ----------------------------------------------------------------
 say "control server -> $APP"
@@ -109,7 +108,9 @@ nmcli con up babloo-usb >/dev/null 2>&1 || echo "  (usb0 not present yet: it com
 
 # ---- 5. camera overlay -------------------------------------------------------
 say "camera overlay in $CONFIG_TXT"
-if ! grep -q '^# babloo camera' "$CONFIG_TXT"; then
+if rpicam-hello --list-cameras 2>/dev/null | grep -q ov5647; then
+  echo "  camera already detected (ov5647), leaving $CONFIG_TXT alone"
+elif ! grep -q '^# babloo camera' "$CONFIG_TXT"; then
   sed -i 's/^camera_auto_detect=1/#camera_auto_detect=1  # disabled by babloo/' "$CONFIG_TXT"
   printf '\n# babloo camera: Arducam Day-Night (OV5647) is not auto-detected\ncamera_auto_detect=0\ndtoverlay=ov5647\n' >>"$CONFIG_TXT"
   echo "  added; REBOOT needed before the camera works"
