@@ -39,7 +39,7 @@ Done:
 - Ordered and in hand or arriving: Arducam Day-Night camera, Amazon Basics 20 Ah bank, Pi-Blox case, Sabrent card reader, Pi 4 1 GB (pishop.us).
 - Owned: 2× Lexar 32 GB A1 microSDHC (one for Pi, one for EV3), EV3 kit.
 
-Waiting on delivery: Pi 4, camera, card reader.
+All ordered parts arrived 2 Nov 2026. Hardware bring-up (phase 0) starts now.
 
 Still to buy: USB-A to mini-USB cable (1 ft), Pi 4 heatsinks, hook-and-loop ties,
 6× AA NiMH + charger unless the LEGO 45501 pack is available.
