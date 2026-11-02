@@ -1,7 +1,7 @@
 # Babloo: Pet-Monitoring Robot Design
 
 A phone-controlled rover with a live camera for checking on pets when nobody is home.
-Built on an existing LEGO EV3 brick with two drive motors, plus a Raspberry Pi for the
+Built on an existing LEGO EV3 brick with two drive motors and a camera-tilt motor, plus a Raspberry Pi for the
 camera, video streaming, and the web control interface.
 
 ## 1. Goals
@@ -39,12 +39,13 @@ flowchart LR
         subgraph Pi["Raspberry Pi 4"]
             MTX["MediaMTX<br/>camera → WebRTC"]
             API["Control server<br/>(FastAPI + WebSocket)"]
-            CAM["Camera Module 3"]
+            CAM["Arducam Day-Night (OV5647)"]
         end
         subgraph EV3["EV3 brick (ev3dev)"]
             MS["motor_server.py"]
             ML["Motor L (port B)"]
-            MR["Motor R (port C)"]
+            MR["Motor R (port D)"]
+            MT["Tilt motor (port A)"]
         end
         PB["USB power bank"]
     end
@@ -64,7 +65,7 @@ flowchart LR
 
 | # | Component | Recommendation | Approx. cost | Notes |
 |---|---|---|---|---|
-| 1 | LEGO EV3 brick + 2 large motors + wheels | Already owned | – | Build a simple two-wheel differential drive with a caster/skid at the back |
+| 1 | LEGO EV3 brick + 2 large drive motors + wheels + 1 motor for camera tilt | Already owned | – | Two-wheel differential drive with a caster/skid at the back; a third motor on port A pivots the camera mount up/down |
 | 2 | Single-board computer | **Raspberry Pi 4 Model B, 1 GB** (pishop.us) | $35 | Hardware H.264 encoder, dual-band Wi-Fi, 4 USB ports. See alternatives below |
 | 3 | Camera | **Arducam Day-Night Vision (OV5647, 5 MP, 130° diagonal, motorised IR-cut filter, 2 IR LED boards included)** | $24 | Correct colour by day, infrared night vision with the lights off. Needs `dtoverlay=ov5647` in the Pi boot config. Alternative for sharper daytime-only video: Arducam IMX708 Wide, ~$30 |
 | 4 | microSD for Pi | 32 GB A1 (owned: Lexar E-series) | $0 | Raspberry Pi OS Lite 64-bit |
@@ -112,12 +113,12 @@ mid-room (and vice versa).
 ```
             front
       ┌───────────────┐
-      │  [camera]     │  ← Camera Module 3, ~20 cm high, tilted slightly up
+      │  [camera]     │  ← Arducam Day-Night camera on the tilt mount, ~20 cm high
       │  ┌─────────┐  │
       │  │  Pi 4   │  │  ← in Technic-compatible case, on top of EV3 brick
       │  └─────────┘  │
       │ ┌───────────┐ │
-  ◯   │ │ EV3 brick │ │   ◯   ← large motors on ports B (left) and C (right)
+  ◯   │ │ EV3 brick │ │   ◯   ← drive motors on ports B (left) and D (right); tilt motor on A
       │ └───────────┘ │
       │  [power bank] │  ← low and central: keeps centre of gravity down
       └──────○────────┘
@@ -140,7 +141,7 @@ Design rules for pets:
 | OS | Raspberry Pi OS Lite (64-bit) | Headless, minimal, first-party camera (libcamera / `rpicam`) support |
 | Video streaming | **MediaMTX** | Single binary; reads the Pi camera natively (`rpiCamera` source), hardware-encodes H.264, and serves **WebRTC** (sub-second latency in any phone browser) plus RTSP/HLS as fallbacks. Zero custom code |
 | Control server | **Python 3 + FastAPI + uvicorn** | Serves the web UI, accepts joystick input over a WebSocket, enforces the speed cap and dead-man stop, forwards drive commands to the EV3 |
-| Web UI | Plain HTML/JS + **nipple.js** virtual joystick, MediaMTX WebRTC player embedded | No app to install; "Add to Home Screen" makes it feel like one. Works on iOS and Android |
+| Web UI | Plain HTML/JS with a self-contained pointer-event joystick (no library, works offline), MediaMTX WebRTC player embedded | No app to install; "Add to Home Screen" makes it feel like one. Works on iOS and Android |
 | Remote access | **Tailscale** | Private mesh VPN between your phone and the Pi. No port forwarding, no public exposure, free for personal use, and WebRTC's UDP traffic passes through cleanly |
 | Process management | systemd units for `mediamtx` and `babloo-control` | Everything starts on boot; robot is usable 30 s after power-on with no laptop |
 | Optional: audio | `aplay` for canned clips ("good boy!") in phase 1; go2rtc or aiortc for full two-way audio in a later phase | |
@@ -156,7 +157,7 @@ bandwidth and noticeably more latency over the internet).
 | Layer | Choice | Why |
 |---|---|---|
 | OS | **ev3dev** (Debian-based, boots from microSD, leaves stock firmware untouched) | Full Linux on the brick: Python 3, networking over USB, and `python-ev3dev2` for motors and sensors |
-| Motor server | ~50-line Python script using `ev3dev2.motor.MoveTank` | Listens on a UDP socket for `{"left": -100..100, "right": -100..100}`, applies it to motors, and **stops the motors itself if no packet arrives for 500 ms** (second, independent dead-man switch) |
+| Motor server | Small Python script using `ev3dev2.motor.MoveTank` (ports B and D) and a `Motor` on port A for camera tilt | Listens on a UDP socket for `{"left": -100..100, "right": -100..100, "tilt": -100..100}`, applies it to the motors with brake on stop, keeps the tilt motor within a soft position range, and **stops every motor itself if no packet arrives for 500 ms** (second, independent dead-man switch) |
 | Pi ↔ EV3 network | **Ethernet over USB** | ev3dev presents the mini-USB port as a network adapter. On the Pi, share the `usb0` interface via NetworkManager; the EV3 gets `10.42.0.x`. No Wi-Fi dongle or Bluetooth pairing needed |
 
 Alternative: keep the **stock LEGO firmware** and drive the motors from the Pi with the
@@ -165,7 +166,7 @@ flexible for sensors and timing. ev3dev is recommended.
 
 ### 4.3 Control flow and safety
 
-1. Phone sends joystick `(x, y)` over the WebSocket 20 times/second.
+1. Phone sends joystick `(x, y)` and the tilt button state (`-1`, `0`, `+1`) over the WebSocket 20 times/second.
 2. Control server on the Pi converts to tank speeds, clamps to the speed cap, and sends a
    UDP packet to the EV3.
 3. If the Pi receives **no joystick message for 500 ms** (phone lost signal, app
@@ -194,7 +195,7 @@ robot stationary rather than driving into a wall or a sleeping dog.
 | Latency target | < 500 ms glass-to-glass via WebRTC | Essential for driving; HLS (3–10 s) is unusable for control |
 | Camera orientation | Set `hflip`/`vflip` in MediaMTX if mounted upside down | |
 
-## 6. Repository layout (proposed)
+## 6. Repository layout
 
 ```
 Babloo/
@@ -202,6 +203,7 @@ Babloo/
 │   └── DESIGN.md              ← this document
 ├── pi/
 │   ├── control_server.py      ← FastAPI app: web UI, WebSocket, dead-man, UDP to EV3
+│   ├── setup.sh               ← one-shot installer, run as root on the Pi
 │   ├── static/index.html      ← joystick + video page
 │   ├── mediamtx.yml           ← rpiCamera source, WebRTC settings
 │   ├── requirements.txt
@@ -209,8 +211,9 @@ Babloo/
 │       ├── babloo-control.service
 │       └── mediamtx.service
 ├── ev3/
-│   ├── motor_server.py        ← UDP listener driving MoveTank, with watchdog
-│   └── babloo-motors.service
+│   ├── motor_server.py        ← UDP listener driving MoveTank + tilt motor, with watchdog
+│   ├── babloo-motors.service
+│   └── setup.sh               ← installer, run as root on the brick
 └── README.md
 ```
 
@@ -231,10 +234,11 @@ Babloo/
 ```python
 #!/usr/bin/env python3
 import json, socket, time
-from ev3dev2.motor import MoveTank, OUTPUT_B, OUTPUT_C, SpeedPercent
+from ev3dev2.motor import MoveTank, Motor, OUTPUT_A, OUTPUT_B, OUTPUT_D, SpeedPercent
 
 TIMEOUT_S = 0.5
-tank = MoveTank(OUTPUT_B, OUTPUT_C)
+tank = MoveTank(OUTPUT_B, OUTPUT_D)
+tilt = Motor(OUTPUT_A)   # camera tilt; the real server adds position limits
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(("0.0.0.0", 5005))
 sock.settimeout(TIMEOUT_S)
@@ -246,10 +250,11 @@ while True:
         left = max(-100, min(100, cmd.get("left", 0)))
         right = max(-100, min(100, cmd.get("right", 0)))
         tank.on(SpeedPercent(left), SpeedPercent(right))
+        tilt.on(SpeedPercent(cmd.get("tilt", 0) * 0.2))
     except socket.timeout:
-        tank.off()          # dead-man: no packet for 0.5 s → stop
+        tank.off(); tilt.off()   # dead-man: no packet for 0.5 s → stop (brake)
     except Exception:
-        tank.off()
+        tank.off(); tilt.off()
 ```
 
 ### Joystick → tank mixing with speed cap (on the Pi)

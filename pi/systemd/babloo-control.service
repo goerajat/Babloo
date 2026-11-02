@@ -1,0 +1,21 @@
+[Unit]
+Description=Babloo control server (web UI, joystick WebSocket, UDP to EV3)
+After=network-online.target NetworkManager.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=babloo
+Group=babloo
+EnvironmentFile=-/etc/babloo/control.env
+WorkingDirectory=/opt/babloo
+ExecStart=/opt/babloo/venv/bin/python /opt/babloo/control_server.py
+Restart=always
+RestartSec=2
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

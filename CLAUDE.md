@@ -5,8 +5,8 @@ Read this first. It is the hand-off from the design sessions and is kept current
 ## What this project is
 
 A phone-controlled robot with a camera for checking on pets when nobody is home.
-LEGO EV3 brick with two large motors drives; a Raspberry Pi 4 on top does camera, video
-streaming, the web control UI and remote access. Full details:
+LEGO EV3 brick with two large motors drives and a third motor tilts the camera; a Raspberry Pi 4
+on top does camera, video streaming, the web control UI and remote access. Full details:
 
 - `docs/DESIGN.md`: architecture, software stack, safety design, phased build plan, code sketches
 - `docs/BOM.md`: every part, with Amazon links, prices, and what has been bought
@@ -23,9 +23,10 @@ streaming, the web control UI and remote access. Full details:
 | Pi power | **Amazon Basics 20 000 mAh 3-port bank** (B0FFM4BY6C), fed from a USB-C port | 5 V/3 A on USB-C; ~12–14 h runtime. INIU 10 Ah is the lighter alternative |
 | Pi ↔ EV3 | USB-A to mini-USB-B cable, Ethernet-over-USB, Pi is host, Pi shares `usb0` via NetworkManager (`ipv4.method shared`) | No Wi-Fi dongle or Bluetooth pairing |
 | Video | **MediaMTX** `rpiCamera` source → **WebRTC** in the phone browser, 1280×720 @ 25 fps, 1.5 Mbps | Sub-second latency, no custom code |
-| Control | **FastAPI + uvicorn** on the Pi, WebSocket from a nipple.js joystick page, UDP JSON `{left,right}` to a ~50-line `motor_server.py` on the EV3 using `ev3dev2.motor.MoveTank` | Simple, two independent 500 ms dead-man timers |
+| Control | **FastAPI + uvicorn** on the Pi, WebSocket from a self-contained joystick page, UDP JSON `{left,right,tilt}` to a small `motor_server.py` on the EV3 using `ev3dev2.motor.MoveTank` plus a tilt `Motor` | Simple, two independent 500 ms dead-man timers |
 | Remote access | **Tailscale** on Pi and phone; services bind to the Tailscale interface; no port forwarding | Private, WebRTC passes through |
-| Motors | Left → port **B**, right → port **C**; speed cap ~35 % | Pet safety |
+| Motors | Left drive → port **B**, right drive → port **D**, camera tilt → port **A**; both drive motors mounted the same way (no inversion), no gearing; brake on stop; drive speed cap ~35 % | Pet safety; user-confirmed 2 Nov 2026 |
+| Camera tilt | Motor on **A** tilts the camera up/down; UP/DOWN buttons on the web page; slow (~20 %), position-limited, stops when released and on dead-man | Camera is front-mounted; tilt lets you look at the floor or the sofa |
 | Case | Pi-Blox LEGO-studded Pi 4 case | Attaches to the EV3 with plates |
 | Soldering | None anywhere in the build | |
 
@@ -33,7 +34,7 @@ streaming, the web control UI and remote access. Full details:
 
 Done:
 - Design, BOM, wiring guide written and committed.
-- EV3 chassis built; motors on B and C verified on stock firmware.
+- EV3 chassis built; drive motors on B and D verified on stock firmware; tilt motor on A.
 - Tailscale installed on phone and laptop.
 - Ordered and in hand or arriving: Arducam Day-Night camera, Amazon Basics 20 Ah bank, Pi-Blox case, Sabrent card reader, Pi 4 1 GB (pishop.us).
 - Owned: 2× Lexar 32 GB A1 microSDHC (one for Pi, one for EV3), EV3 kit.
@@ -43,20 +44,34 @@ Waiting on delivery: Pi 4, camera, card reader.
 Still to buy: USB-A to mini-USB cable (1 ft), Pi 4 heatsinks, hook-and-loop ties,
 6× AA NiMH + charger unless the LEGO 45501 pack is available.
 
+## Software (written 2 Nov 2026, tested against a fake EV3 on the PC, not yet on hardware)
+
+| File | Role |
+|---|---|
+| `ev3/motor_server.py` | UDP 5005 listener on the brick. `{"left","right","tilt"}` → `MoveTank(B, D)` + tilt `Motor(A)`. Brake on stop, tilt holds, soft tilt limits ±60°, 500 ms dead-man, back button exits. Replies with a status packet and announces itself to `10.42.0.1:5006` every second so the Pi learns its address. Python 3.5 compatible |
+| `ev3/babloo-motors.service`, `ev3/setup.sh` | systemd unit (user `robot`) and installer: `scp -r ev3/ robot@ev3dev.local:babloo-src && ssh robot@ev3dev.local 'sudo sh babloo-src/setup.sh'` |
+| `pi/control_server.py` | FastAPI + uvicorn. Serves the page (optional basic auth), WebSocket `/ws?token=` (token injected into the page), 20 Hz UDP sender, speed cap 35 %, 500 ms dead-man, STOP latch (ignores joystick until released), EV3 auto-discovery on UDP 5006. Config via `/etc/babloo/control.env` |
+| `pi/static/index.html` | Self-contained page: MediaMTX WebRTC iframe (`http://<host>:8889/cam/`), hand-rolled pointer-event joystick (no nipple.js dependency, works offline), hold-to-tilt ▲ ▼ and ⦿ centre buttons, STOP, status bar (link, EV3, battery, L/R). Keyboard WASD / Q E / space for laptop testing |
+| `pi/mediamtx.yml` | `rpiCamera` 1280×720 @ 25 fps, 1.5 Mbps, WebRTC only, everything else off |
+| `pi/systemd/*.service`, `pi/requirements.txt`, `pi/setup.sh` | Installer run as root on the Pi: packages, `/opt/babloo` venv, MediaMTX binary, `babloo-usb` shared connection, camera overlay lines, Tailscale, services. `--lockdown` binds everything to the Tailscale IP, `--open` reverts, `--auth USER` sets basic auth |
+
+Test harness used on the PC (not committed): a fake `ev3dev2` package plus a websocket client
+that checked mixing (35/35 forward, 35/−35 spin), both dead-man paths, the STOP latch, tilt and
+tilt-home, and token rejection. Page layout checked at phone size in both orientations.
+
 ## Next steps, in order
 
-1. On the user's PC: run `downloads\download.ps1` (Windows) or `downloads/download.sh` to fetch
-   Imager, Pi OS Lite 64-bit, the ev3dev EV3 image and MediaMTX. Not yet run.
-2. **Write the software** (no hardware needed), into the layout proposed in `docs/DESIGN.md` §6:
-   - `ev3/motor_server.py` + `ev3/babloo-motors.service`: UDP listener, MoveTank, 500 ms watchdog, stop on any error
-   - `pi/control_server.py`: FastAPI, serves `pi/static/index.html`, WebSocket at 20 Hz, joystick→tank mixing with speed cap, 500 ms dead-man → send stop, forwards UDP to EV3 at 10.42.0.x (discover via `ip neigh` or fixed lease)
-   - `pi/static/index.html`: MediaMTX WebRTC player (`http://<pi>:8889/cam`) embedded + nipple.js joystick + big STOP button; mobile-first, `playsinline muted`
-   - `pi/mediamtx.yml`, `pi/systemd/*.service`, `pi/requirements.txt`
-   - `pi/setup.sh`: installs MediaMTX, Tailscale, python deps, NetworkManager shared connection for `usb0`, enables services, writes the two camera lines to `/boot/firmware/config.txt`
-   - `ev3/setup.sh`: copies motor server, enables service
-3. When hardware arrives: flash both cards with Imager (ev3dev via "Use custom"), label them,
-   boot, run `pi/setup.sh`, confirm video on the phone (phase 0), then drive (phase 1), then
-   Tailscale-only access (phase 2). Phases are detailed in `docs/DESIGN.md` §7.
+1. When hardware arrives: flash both cards with Imager (ev3dev via "Use custom"), label them.
+2. Pi: `scp -r pi/ downloads/files/mediamtx_*_linux_arm64.tar.gz <user>@<pi>:` then
+   `sudo bash pi/setup.sh`, reboot (camera overlay), open `http://<pi>:8889/cam/` on the phone
+   (phase 0). If MediaMTX's bundled camera component fails on Pi OS Trixie, check the MediaMTX
+   release notes for the matching libcamera and fall back to `rpicam-vid | mediamtx` RTSP.
+3. EV3: plug in USB, run `ev3/setup.sh` as above, open `http://<pi>:8000/`, confirm the EV3 dot
+   turns green, drive (phase 1). Verify on the bench: pulling the USB cable stops the motors
+   within 0.5 s; closing the browser tab stops them; STOP latches until the stick is released.
+   If "up" tilts the camera down, set `INVERT_TILT = True`; tune `TILT_MIN_DEG` / `TILT_MAX_DEG`.
+4. `sudo tailscale up`, then `sudo bash pi/setup.sh --lockdown --auth <user>` (phase 2); test on
+   mobile data with Wi-Fi off.
 
 ## Conventions
 

@@ -69,8 +69,12 @@ Never try to power the Pi from the EV3's USB port, and never back-feed the EV3 f
 ### 5. EV3 → motors (LEGO cables)
 
 - Cables: standard LEGO EV3 RJ12-style cables that came with the kit. 25 cm is usually right.
-- **Left large motor → output port B**, **right large motor → output port C**. These are the
-  defaults in the motor server; swap the constants if you wire them the other way.
+- **Left large motor → output port B**, **right large motor → output port D**. Both drive motors
+  are mounted facing the same way and drive the wheels directly, so neither is inverted in software.
+- **Camera tilt motor → output port A**. It pivots the camera mount up and down; the motor server
+  limits its travel to a soft range either side of the power-on position.
+- These are the defaults in the motor server; change the constants at the top of
+  `ev3/motor_server.py` if you wire them differently.
 - Output ports A–D are the row on the **top** edge of the brick, next to the PC port.
 
 ### 6. Optional sensors → EV3 (LEGO cables)
@@ -109,6 +113,6 @@ Peel the thermal tape, press for ten seconds, done.
 - [ ] microSD with Pi OS in the Pi, microSD with ev3dev in the EV3, both labelled
 - [ ] USB-C from the bank's **USB-C** port to the Pi
 - [ ] USB-A to mini-USB from a **black** Pi port to the EV3 PC port
-- [ ] Motors on **B** and **C**
+- [ ] Drive motors on **B** (left) and **D** (right); tilt motor on **A**
 - [ ] Six charged AA cells (or the 45501 pack) in the brick
 - [ ] Every cable zip-tied or velcroed so nothing dangles for a pet to chew

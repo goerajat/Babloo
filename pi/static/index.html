@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000">
+<title>Babloo</title>
+<style>
+  :root { --pad: max(12px, env(safe-area-inset-left)); --red: #e0301e; --ok: #37c871; --bad: #e0301e; --warn: #f2b134; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: #000; color: #eee; font: 15px/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #video { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #111; }
+  #video-tap { position: fixed; inset: 0; display: none; place-items: center; background: rgba(0,0,0,.6); font-size: 20px; }
+  #bar { position: fixed; top: 0; left: 0; right: 0; display: flex; gap: 14px; align-items: center; padding: calc(6px + env(safe-area-inset-top)) var(--pad) 6px; background: linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,0)); font-size: 13px; pointer-events: none; }
+  #bar .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #666; margin-right: 5px; vertical-align: -1px; }
+  #bar .ok .dot { background: var(--ok); } #bar .bad .dot { background: var(--bad); } #bar .warn .dot { background: var(--warn); }
+  #bar .spacer { flex: 1; }
+  #bar button { pointer-events: auto; background: rgba(255,255,255,.12); color: #eee; border: 0; border-radius: 6px; padding: 4px 9px; font-size: 12px; }
+  #joy { position: fixed; left: var(--pad); bottom: calc(var(--pad) + env(safe-area-inset-bottom)); width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,.10); border: 2px solid rgba(255,255,255,.35); }
+  #knob { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255,255,255,.75); box-shadow: 0 2px 10px rgba(0,0,0,.5); }
+  #joy.active #knob { background: #fff; }
+  #tilt { position: fixed; right: calc(var(--pad) + 140px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+  #tilt button { width: 64px; height: 64px; border-radius: 14px; border: 2px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); color: #fff; font-size: 26px; }
+  #tilt button.held, #tilt button:active { background: rgba(255,255,255,.45); }
+  #tilt button[disabled] { opacity: .35; }
+  #tilt-pos { text-align: center; font-size: 12px; color: #bbb; }
+  #stop { position: fixed; right: var(--pad); bottom: calc(var(--pad) + env(safe-area-inset-bottom)); width: 120px; height: 120px; border-radius: 50%; border: 4px solid #fff; background: var(--red); color: #fff; font-size: 24px; font-weight: 800; letter-spacing: 1px; box-shadow: 0 4px 16px rgba(0,0,0,.6); }
+  #stop:active { background: #a81e10; }
+  #stop.latched { background: #6b1b12; border-color: #ffd0cb; }
+  #stop.latched::after { content: "release stick"; display: block; font-size: 11px; font-weight: 400; letter-spacing: 0; }
+  #toast { position: fixed; left: 50%; bottom: calc(var(--pad) + 140px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: rgba(0,0,0,.75); padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .25s; pointer-events: none; }
+  #toast.show { opacity: 1; }
+  @media (orientation: portrait) {
+    #tilt { right: var(--pad); top: auto; transform: none; bottom: calc(var(--pad) + 140px + env(safe-area-inset-bottom)); }
+  }
+</style>
+</head>
+<body>
+<iframe id="video" title="camera" allow="autoplay" allowfullscreen></iframe>
+<div id="video-tap">tap to start video</div>
+
+<div id="bar">
+  <span id="s-link" class="bad"><span class="dot"></span>link</span>
+  <span id="s-ev3" class="bad"><span class="dot"></span>EV3</span>
+  <span id="s-batt"></span>
+  <span class="spacer"></span>
+  <span id="s-speed"></span>
+  <button id="reload-video" type="button">video ↻</button>
+</div>
+
+<div id="joy"><div id="knob"></div></div>
+
+<div id="tilt">
+  <button id="tilt-up" type="button" aria-label="tilt camera up">▲</button>
+  <button id="tilt-home" type="button" aria-label="centre camera" style="font-size:18px">⦿</button>
+  <button id="tilt-down" type="button" aria-label="tilt camera down">▼</button>
+  <div id="tilt-pos"></div>
+</div>
+
+<button id="stop" type="button">STOP</button>
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var CFG = __BABLOO_CONFIG__;            // injected by control_server.py
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- video (MediaMTX WebRTC reader page) -------------------------------
+  var video = $("video");
+  function videoUrl() {
+    var host = location.hostname;
+    if (host.indexOf(":") >= 0) host = "[" + host + "]";      // IPv6
+    return location.protocol + "//" + host + ":" + CFG.webrtcPort + "/cam/";
+  }
+  function loadVideo() { video.src = videoUrl() + "?t=" + Date.now(); }
+  $("reload-video").addEventListener("click", loadVideo);
+  loadVideo();
+
+  // ---- control state ------------------------------------------------------
+  var x = 0, y = 0, tilt = 0, latched = false;
+  var ws = null, wsOpen = false, sendTimer = null, reconnectDelay = 500;
+
+  function send(obj) {
+    if (wsOpen) { try { ws.send(JSON.stringify(obj)); } catch (e) {} }
+  }
+  function tick() {                         // 20 Hz: feeds the Pi's dead-man timer
+    if (document.hidden) { send({ x: 0, y: 0, tilt: 0 }); return; }
+    send({ x: x, y: y, tilt: tilt });
+  }
+  function connect() {
+    var proto = location.protocol === "https:" ? "wss://" : "ws://";
+    ws = new WebSocket(proto + location.host + "/ws?token=" + encodeURIComponent(CFG.token));
+    ws.onopen = function () {
+      wsOpen = true; reconnectDelay = 500;
+      setStatus("s-link", "ok");
+      if (sendTimer) clearInterval(sendTimer);
+      sendTimer = setInterval(tick, 1000 / CFG.sendHz);
+    };
+    ws.onmessage = function (ev) {
+      try { var m = JSON.parse(ev.data); if (m.status) render(m.status); } catch (e) {}
+    };
+    ws.onclose = ws.onerror = function () {
+      if (!wsOpen && ws.readyState !== WebSocket.CLOSED) return;
+      wsOpen = false;
+      setStatus("s-link", "bad"); setStatus("s-ev3", "bad");
+      if (sendTimer) { clearInterval(sendTimer); sendTimer = null; }
+      setTimeout(connect, reconnectDelay);
+      reconnectDelay = Math.min(reconnectDelay * 2, 5000);
+    };
+  }
+  connect();
+
+  // ---- STOP ---------------------------------------------------------------
+  var stopBtn = $("stop");
+  function stop(reason) {
+    x = 0; y = 0; tilt = 0; latched = true;
+    resetKnob(); clearHeld();
+    send({ stop: true });
+    stopBtn.classList.add("latched");
+    toast("Stopped" + (reason ? " (" + reason + ")" : "") + ". Release and re-centre the stick to drive.");
+  }
+  stopBtn.addEventListener("pointerdown", function (e) { e.preventDefault(); stop(); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) stop("app hidden"); });
+  window.addEventListener("pagehide", function () { send({ x: 0, y: 0, tilt: 0 }); send({ stop: true }); });
+
+  // ---- joystick (self-contained, pointer events) --------------------------
+  var joy = $("joy"), knob = $("knob"), joyId = null, R = 53;   // 170/2 - 32
+  function resetKnob() { knob.style.transform = ""; joy.classList.remove("active"); }
+  function joyMove(e) {
+    var rect = joy.getBoundingClientRect();
+    var dx = e.clientX - (rect.left + rect.width / 2);
+    var dy = e.clientY - (rect.top + rect.height / 2);
+    var d = Math.hypot(dx, dy), max = rect.width / 2;
+    if (d > max) { dx *= max / d; dy *= max / d; d = max; }
+    var kx = dx * (R / max), ky = dy * (R / max);
+    knob.style.transform = "translate(" + kx + "px," + ky + "px)";
+    var nx = dx / max, ny = -dy / max;                      // forward = up = +y
+    var dead = 0.08;
+    x = Math.abs(nx) < dead ? 0 : nx;
+    y = Math.abs(ny) < dead ? 0 : ny;
+    x = Math.round(x * 100) / 100; y = Math.round(y * 100) / 100;
+  }
+  joy.addEventListener("pointerdown", function (e) {
+    if (joyId !== null) return;
+    joyId = e.pointerId; joy.setPointerCapture(joyId); joy.classList.add("active");
+    joyMove(e); e.preventDefault();
+  });
+  joy.addEventListener("pointermove", function (e) { if (e.pointerId === joyId) joyMove(e); });
+  function joyEnd(e) {
+    if (e.pointerId !== joyId) return;
+    joyId = null; x = 0; y = 0; resetKnob();
+    send({ x: 0, y: 0, tilt: tilt });                      // immediate stop, don't wait for the tick
+  }
+  joy.addEventListener("pointerup", joyEnd);
+  joy.addEventListener("pointercancel", joyEnd);
+  joy.addEventListener("lostpointercapture", joyEnd);
+
+  // ---- camera tilt: hold to move ------------------------------------------
+  var up = $("tilt-up"), down = $("tilt-down"), home = $("tilt-home");
+  function hold(btn, dir) {
+    var id = null;
+    btn.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); id = e.pointerId; btn.setPointerCapture(id);
+      tilt = dir; btn.classList.add("held"); send({ x: x, y: y, tilt: tilt });
+    });
+    function release(e) {
+      if (id === null || e.pointerId !== id) return;
+      id = null; tilt = 0; btn.classList.remove("held"); send({ x: x, y: y, tilt: 0 });
+    }
+    btn.addEventListener("pointerup", release);
+    btn.addEventListener("pointercancel", release);
+    btn.addEventListener("lostpointercapture", release);
+  }
+  hold(up, 1); hold(down, -1);
+  function clearHeld() { up.classList.remove("held"); down.classList.remove("held"); }
+  home.addEventListener("click", function () { tilt = 0; send({ tilt_home: true }); toast("Centering camera"); });
+
+  // ---- keyboard, for testing from a laptop --------------------------------
+  var keys = {};
+  function keyUpdate() {
+    if (latched) return;
+    y = (keys.w || keys.ArrowUp ? 1 : 0) - (keys.s || keys.ArrowDown ? 1 : 0);
+    x = (keys.d || keys.ArrowRight ? 1 : 0) - (keys.a || keys.ArrowLeft ? 1 : 0);
+    tilt = (keys.q || keys.PageUp ? 1 : 0) - (keys.e || keys.PageDown ? 1 : 0);
+  }
+  window.addEventListener("keydown", function (e) {
+    if (e.key === " " || e.key === "Escape") { stop("key"); return; }
+    if (e.key.length === 1 || e.key.indexOf("Arrow") === 0 || e.key.indexOf("Page") === 0) { keys[e.key] = true; keys[e.key.toLowerCase()] = true; keyUpdate(); }
+  });
+  window.addEventListener("keyup", function (e) { delete keys[e.key]; delete keys[e.key.toLowerCase()]; keyUpdate(); });
+
+  // ---- status rendering ---------------------------------------------------
+  function setStatus(id, cls) { var el = $(id); el.className = cls; }
+  function render(s) {
+    setStatus("s-ev3", s.ev3 === "ok" ? "ok" : "bad");
+    $("s-batt").textContent = s.batt_v != null ? s.batt_v.toFixed(1) + " V" : "";
+    $("s-speed").textContent = (s.left || s.right) ? ("L " + s.left + "  R " + s.right) : ("cap " + s.max_speed + "%");
+    if (s.estop !== latched) {
+      latched = !!s.estop;
+      stopBtn.classList.toggle("latched", latched);
+    }
+    if (s.tilt_pos != null) {
+      $("tilt-pos").textContent = s.tilt_pos + "°";
+      up.disabled = s.tilt_max != null && s.tilt_pos >= s.tilt_max;
+      down.disabled = s.tilt_min != null && s.tilt_pos <= s.tilt_min;
+    }
+  }
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2500);
+  }
+})();
+</script>
+</body>
+</html>

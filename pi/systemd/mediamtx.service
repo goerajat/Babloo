@@ -1,0 +1,14 @@
+[Unit]
+Description=MediaMTX (Babloo camera -> WebRTC)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Runs as root: the rpiCamera source needs /dev/video*, /dev/dma_heap and /dev/vchiq.
+ExecStart=/usr/local/bin/mediamtx /etc/babloo/mediamtx.yml
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

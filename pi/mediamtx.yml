@@ -1,0 +1,58 @@
+# Babloo MediaMTX configuration (installed to /etc/babloo/mediamtx.yml).
+# Reads the Pi camera, hardware-encodes H.264, serves WebRTC on :8889.
+# Reference for every key: https://github.com/bluenviron/mediamtx/blob/main/mediamtx.yml
+
+logLevel: info
+logDestinations: [stdout]
+
+# Only WebRTC is exposed. Everything else off to keep the surface small.
+api: no
+metrics: no
+pprof: no
+playback: no
+rtsp: no
+rtmp: no
+hls: no
+srt: no
+
+webrtc: yes
+# setup.sh --lockdown rewrites this to <tailscale-ip>:8889 so the stream is reachable only over Tailscale.
+webrtcAddress: :8889
+webrtcEncryption: no
+webrtcAllowOrigin: '*'
+webrtcLocalUDPAddress: :8189
+webrtcIPsFromInterfaces: yes
+# No STUN/TURN needed: phone and Pi are on the same Tailscale network (or the same Wi-Fi in phase 0).
+webrtcICEServers2: []
+
+# Anyone who can reach the port may watch. Reachability is controlled by Tailscale.
+authMethod: internal
+authInternalUsers:
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: read
+
+pathDefaults:
+  # Hold the camera open even with no viewer so the first frame is instant.
+  sourceOnDemand: no
+
+paths:
+  cam:
+    source: rpiCamera
+    rpiCameraCamID: 0
+    rpiCameraWidth: 1280
+    rpiCameraHeight: 720
+    rpiCameraFPS: 25
+    rpiCameraBitrate: 1500000
+    rpiCameraIDRPeriod: 50          # keyframe every 2 s: fast WebRTC start, quick recovery
+    rpiCameraProfile: main
+    rpiCameraLevel: '4.1'
+    rpiCameraAfMode: auto           # ignored by the fixed-focus OV5647, harmless
+    rpiCameraExposure: normal
+    rpiCameraAWB: auto
+    # Flip if the camera ends up mounted upside down on the tilt mount:
+    rpiCameraHFlip: false
+    rpiCameraVFlip: false
+    # Weak upload? Try 960x540, 20 fps, 800000 bps.

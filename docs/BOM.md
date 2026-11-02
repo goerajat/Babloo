@@ -49,7 +49,7 @@ heatsinks, hook-and-loop ties, and AA NiMH cells + charger for the EV3 unless yo
 
 ## Already owned (no purchase)
 
-- LEGO EV3 brick, 2 large motors, wheels, Technic beams and pins for the chassis.
+- LEGO EV3 brick, 2 large drive motors, 1 motor for camera tilt, wheels, Technic beams and pins for the chassis.
 - 2× Lexar E-series 32 GB UHS-I A1 microSDHC cards (one for the Pi, one for the EV3).
 - EV3 touch sensor and ultrasonic sensor if your kit included them (bumper and obstacle sensing in phase 4).
 - A phone with a modern browser.
