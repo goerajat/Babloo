@@ -39,7 +39,13 @@ Done:
 - Ordered and in hand or arriving: Arducam Day-Night camera, Amazon Basics 20 Ah bank, Pi-Blox case, Sabrent card reader, Pi 4 1 GB (pishop.us).
 - Owned: 2× Lexar 32 GB A1 microSDHC (one for Pi, one for EV3), EV3 kit.
 
-All ordered parts arrived 2 Nov 2026. Hardware bring-up (phase 0) starts now.
+All ordered parts arrived 2 Nov 2026.
+
+**Phase 0 done (2 Nov 2026 evening):** Pi flashed (user `babloo`, key-only SSH from this PC, hostname
+`babloo.local`, Wi-Fi 192.168.1.245), `pi/setup.sh` run, MediaMTX streaming 1280x720 H.264 via the hardware
+encoder, verified live in a browser at `http://192.168.1.245:8889/cam/`. Camera auto-detected on Pi OS Trixie
+without config.txt changes. Tailscale installed but not logged in. `sudo` on the Pi needs the user's password,
+so anything with sudo runs in the user's own terminal, not from Claude.
 
 Still to buy: USB-A to mini-USB cable (1 ft), Pi 4 heatsinks, hook-and-loop ties,
 6× AA NiMH + charger unless the LEGO 45501 pack is available.
@@ -61,11 +67,9 @@ tilt-home, and token rejection. Page layout checked at phone size in both orient
 
 ## Next steps, in order
 
-1. When hardware arrives: flash both cards with Imager (ev3dev via "Use custom"), label them.
-2. Pi: `scp -r pi/ downloads/files/mediamtx_*_linux_arm64.tar.gz <user>@<pi>:` then
-   `sudo bash pi/setup.sh`, reboot (camera overlay), open `http://<pi>:8889/cam/` on the phone
-   (phase 0). If MediaMTX's bundled camera component fails on Pi OS Trixie, check the MediaMTX
-   release notes for the matching libcamera and fall back to `rpicam-vid | mediamtx` RTSP.
+1. ~~Flash the Pi card, run setup, phase 0 video~~ done.
+2. Flash the EV3 card with Imager ("Use custom", the ev3dev zip), label it. Re-copy `pi/mediamtx.yml`
+   to the Pi and `sudo systemctl restart mediamtx` (moq disabled, H264 level key renamed).
 3. EV3: plug in USB, run `ev3/setup.sh` as above, open `http://<pi>:8000/`, confirm the EV3 dot
    turns green, drive (phase 1). Verify on the bench: pulling the USB cable stops the motors
    within 0.5 s; closing the browser tab stops them; STOP latches until the stick is released.

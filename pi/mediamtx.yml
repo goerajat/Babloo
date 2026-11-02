@@ -14,6 +14,7 @@ rtsp: no
 rtmp: no
 hls: no
 srt: no
+moq: no
 
 webrtc: yes
 # setup.sh --lockdown rewrites this to <tailscale-ip>:8889 so the stream is reachable only over Tailscale.
@@ -48,7 +49,7 @@ paths:
     rpiCameraBitrate: 1500000
     rpiCameraIDRPeriod: 50          # keyframe every 2 s: fast WebRTC start, quick recovery
     rpiCameraProfile: main
-    rpiCameraLevel: '4.1'
+    rpiCameraH264Level: '4.1'
     rpiCameraAfMode: auto           # ignored by the fixed-focus OV5647, harmless
     rpiCameraExposure: normal
     rpiCameraAWB: auto
