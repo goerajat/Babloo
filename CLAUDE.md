@@ -25,8 +25,8 @@ on top does camera, video streaming, the web control UI and remote access. Full 
 | Video | **MediaMTX** `rpiCamera` source → **WebRTC** in the phone browser, 1280×720 @ 25 fps, 1.5 Mbps | Sub-second latency, no custom code |
 | Control | **FastAPI + uvicorn** on the Pi, WebSocket from a self-contained joystick page, UDP JSON `{left,right,tilt}` to a small `motor_server.py` on the EV3 using `ev3dev2.motor.MoveTank` plus a tilt `Motor` | Simple, two independent 500 ms dead-man timers |
 | Remote access | **Tailscale** on Pi and phone; services bind to the Tailscale interface; no port forwarding | Private, WebRTC passes through |
-| Motors | Left drive → port **B**, right drive → port **D**, camera tilt → port **A**; both drive motors mounted the same way (no inversion), no gearing; brake on stop; drive speed cap ~35 % | Pet safety; user-confirmed 2 Nov 2026 |
-| Camera tilt | Motor on **A** tilts the camera up/down; UP/DOWN buttons on the web page; slow (~20 %), position-limited, stops when released and on dead-man | Camera is front-mounted; tilt lets you look at the floor or the sofa |
+| Motors | Left drive → port **B**, right drive → port **D**, camera tilt → port **A**; both drive motors mounted the same way, both inverted in software (positive = backwards), no gearing; brake on stop; drive speed cap ~35 % | Pet safety; user-confirmed 2 Nov 2026 |
+| Camera tilt | Motor on **A** tilts the camera up/down; UP/DOWN buttons on the web page; slow (8 %), position-limited, stops when released and on dead-man | Camera is front-mounted; tilt lets you look at the floor or the sofa |
 | Case | Pi-Blox LEGO-studded Pi 4 case | Attaches to the EV3 with plates |
 | Soldering | None anywhere in the build | |
 

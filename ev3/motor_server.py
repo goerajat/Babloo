@@ -36,15 +36,15 @@ from ev3dev2.motor import MoveTank, Motor, OUTPUT_A, OUTPUT_B, OUTPUT_D, SpeedPe
 LEFT_PORT = OUTPUT_B
 RIGHT_PORT = OUTPUT_D
 TILT_PORT = OUTPUT_A
-INVERT_LEFT = False     # both drive motors are mounted the same way
-INVERT_RIGHT = False
+INVERT_LEFT = True      # both drive motors are mounted the same way; positive = backwards on this chassis
+INVERT_RIGHT = True
 INVERT_TILT = False     # set True if "up" on the page tilts the camera down
 
 # ---- behaviour ------------------------------------------------------------
 UDP_PORT = 5005
 TIMEOUT_S = 0.5         # dead-man: stop if silent for this long
 MAX_DRIVE_PCT = 50      # hard ceiling on the brick; the Pi applies the real (lower) cap
-TILT_SPEED_PCT = 20     # slow, so the camera does not slam against its stops
+TILT_SPEED_PCT = 8      # slow, so the camera does not slam against its stops (20 was far too fast)
 TILT_MIN_DEG = -60      # soft travel limits, degrees of motor shaft from power-on angle
 TILT_MAX_DEG = 60
 STATUS_HOST = "10.42.0.1"   # the Pi, as seen over the shared USB link

@@ -70,7 +70,8 @@ Never try to power the Pi from the EV3's USB port, and never back-feed the EV3 f
 
 - Cables: standard LEGO EV3 RJ12-style cables that came with the kit. 25 cm is usually right.
 - **Left large motor → output port B**, **right large motor → output port D**. Both drive motors
-  are mounted facing the same way and drive the wheels directly, so neither is inverted in software.
+  are mounted facing the same way and drive the wheels directly. On this chassis a positive motor speed
+  drives backwards, so both are inverted in software (`INVERT_LEFT = INVERT_RIGHT = True`), verified 2 Nov 2026.
 - **Camera tilt motor → output port A**. It pivots the camera mount up and down; the motor server
   limits its travel to a soft range either side of the power-on position.
 - These are the defaults in the motor server; change the constants at the top of
