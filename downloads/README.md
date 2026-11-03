@@ -8,7 +8,7 @@ The downloaded files are ignored by git, since the OS images are several hundred
 |---|---|---|
 | Raspberry Pi Imager | Flashes the Pi card **and** the EV3 card ("Use custom" image). Pre-configures Wi-Fi, SSH and user for the Pi | ~30 MB |
 | Raspberry Pi OS Lite (64-bit) | The Pi's operating system. Imager can also download this itself, but having it locally makes re-flashing faster | ~450 MB |
-| ev3dev-stretch EV3 image | The EV3's operating system. Latest stable is the 2020-04-10 release | ~300 MB |
+| ev3dev-stretch EV3 image | The EV3's operating system. Latest stable is the 2020-04-10 release. The scripts also extract the bare `.img` from the zip: **flash the `.img`, not the zip**, because the zip nests the image in a folder and Imager writes nothing from it | ~300 MB zip, 1.8 GB img |
 | MediaMTX (linux arm64) | Video streaming server. Copied to the Pi during setup | ~15 MB |
 | balenaEtcher (optional) | Alternative flashing tool. Only needed if Imager's custom-image option misbehaves | ~150 MB |
 

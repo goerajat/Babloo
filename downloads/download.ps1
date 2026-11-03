@@ -35,6 +35,15 @@ try {
   $u = GhLatestAsset "ev3dev/ev3dev" 'ev3-generic.*\.(zip|img\.xz)$'
   Fetch $u (Split-Path $u -Leaf)
 }
+# The zip nests the .img inside a folder with metadata; Imager needs the bare .img.
+if (-not (Test-Path "ev3dev-stretch-ev3-generic-2020-04-10.img")) {
+  Write-Host "  extracting .img (Imager cannot use the nested zip)"
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $z = [IO.Compression.ZipFile]::OpenRead((Resolve-Path "ev3dev-stretch-ev3-generic-2020-04-10.zip"))
+  $e = $z.Entries | Where-Object { $_.Name -like "*.img" } | Select-Object -First 1
+  [IO.Compression.ZipFileExtensions]::ExtractToFile($e, (Join-Path (Get-Location) $e.Name), $true)
+  $z.Dispose()
+}
 
 Write-Host "== MediaMTX (linux arm64, for the Pi)"
 $u = GhLatestAsset "bluenviron/mediamtx" 'linux_arm64(v8)?\.tar\.gz$'

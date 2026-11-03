@@ -41,6 +41,12 @@ if ! fetch "$EV3_URL" ev3dev-stretch-ev3-generic-2020-04-10.zip; then
   fetch "$u" "$(basename "$u")"
 fi
 
+# The zip nests the .img inside a folder with metadata; Imager needs the bare .img.
+if ! ls ev3dev-*.img >/dev/null 2>&1; then
+  echo "  extracting .img (Imager cannot use the nested zip)"
+  unzip -o -j -q ev3dev-*.zip "*/*.img" -d .
+fi
+
 echo "== MediaMTX (linux arm64, for the Pi)"
 u="$(gh_latest_asset bluenviron/mediamtx 'linux_arm64(v8)?\.tar\.gz$')"
 fetch "$u" "$(basename "$u")"
