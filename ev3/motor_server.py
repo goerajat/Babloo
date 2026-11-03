@@ -180,7 +180,7 @@ def main():
             try:
                 data, addr = sock.recvfrom(512)
             except socket.timeout:
-                if not stopped_by_timeout:
+                if not stopped_by_timeout and (robot.moving or robot.tilt_dir != 0):
                     print("dead-man: no packet for %.1f s, motors stopped" % TIMEOUT_S)
                     sys.stdout.flush()
                 robot.stop_all()

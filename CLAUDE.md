@@ -47,6 +47,15 @@ encoder, verified live in a browser at `http://192.168.1.245:8889/cam/`. Camera 
 without config.txt changes. Tailscale installed but not logged in. `sudo` on the Pi needs the user's password,
 so anything with sudo runs in the user's own terminal, not from Claude.
 
+**Phase 1 bring-up (2 Nov 2026, late):** EV3 card flashed from the extracted `.img` (Imager wrote nothing
+from the nested zip). ev3dev boots; the USB link had to be connected once from the brick's menu
+(Wireless and Networks > All Network Connections > Wired > Connect). Brick is `10.42.0.99` on `usb0`,
+hostname `ev3dev`, Python 3.5.3, large motors detected on A, B, D. Motor server installed and active;
+control server reports `ev3: ok`, battery 8.27 V. Reach the brick from this PC with
+`ssh -J babloo@babloo.local robot@10.42.0.99` (key auth; `sudo` there still needs password `maker`).
+Both services can be restarted without sudo by killing their main PID (systemd restarts them).
+First drive from the phone not yet done.
+
 Still to buy: USB-A to mini-USB cable (1 ft), Pi 4 heatsinks, hook-and-loop ties,
 6× AA NiMH + charger unless the LEGO 45501 pack is available.
 

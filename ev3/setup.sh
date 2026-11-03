@@ -14,6 +14,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 mkdir -p "$DEST"
+chown robot:robot "$DEST"      # so later updates can be copied in as robot without sudo
 install -m 0755 -o robot -g robot "$SRC/motor_server.py" "$DEST/motor_server.py"
 install -m 0644 "$SRC/babloo-motors.service" /etc/systemd/system/babloo-motors.service
 

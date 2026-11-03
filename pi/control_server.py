@@ -188,7 +188,9 @@ async def sender_loop():
     period = 1.0 / SEND_HZ
     while True:
         cmd = state.command()
-        if state.clients or cmd != {"left": 0, "right": 0, "tilt": 0} or tick % SEND_HZ == 0:
+        # Only talk to the EV3 while a phone is connected (or a stop/home is pending).
+        # The EV3 announces itself every second, so no keepalive is needed from this side.
+        if state.clients or cmd != {"left": 0, "right": 0, "tilt": 0}:
             link.send(cmd)
         state.sent = (cmd.get("left", 0), cmd.get("right", 0), cmd.get("tilt", 0))
         tick += 1
